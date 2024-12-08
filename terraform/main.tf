@@ -85,8 +85,8 @@ module "ec2" {
   subnet_id     = tolist(data.aws_subnet_ids.all.ids)[0]
   //  private_ips                 = ["172.31.32.5", "172.31.46.20"]
   vpc_security_group_ids      = [module.security_group.this_security_group_id]
-  associate_public_ip_address = true
   placement_group             = aws_placement_group.web.id
+  associate_public_ip_address = true
 
   user_data_base64 = base64encode(local.user_data)
 
@@ -102,7 +102,7 @@ module "ec2" {
       device_name = "/dev/sdf"
       volume_type = "gp2"
       volume_size = 5
-      encrypted   = true
+      encrypted   = false
       kms_key_id  = aws_kms_key.this.arn
     }
   ]
@@ -118,6 +118,7 @@ module "ec2_with_t2_unlimited" {
 
   instance_count = 1
 
+  associate_public_ip_address = true
   name          = "example-t2-unlimited"
   ami           = data.aws_ami.amazon_linux.id
   instance_type = "t2.micro"
@@ -125,7 +126,7 @@ module "ec2_with_t2_unlimited" {
   subnet_id     = tolist(data.aws_subnet_ids.all.ids)[0]
   //  private_ip = "172.31.32.10"
   vpc_security_group_ids      = [module.security_group.this_security_group_id]
-  associate_public_ip_address = true
+
 }
 
 module "ec2_with_t3_unlimited" {
@@ -146,11 +147,11 @@ module "ec2_with_network_interface" {
   source = "../../"
 
   instance_count = 1
-
+  placement_group = aws_placement_group.web.id
   name            = "example-network"
   ami             = data.aws_ami.amazon_linux.id
   instance_type   = "c5.large"
-  placement_group = aws_placement_group.web.id
+
 
   network_interface = [
     {
