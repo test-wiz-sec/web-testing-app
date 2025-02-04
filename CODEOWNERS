@@ -1,0 +1,2 @@
+*.tf @tomfeigin
+terraform/ @gsaraf
